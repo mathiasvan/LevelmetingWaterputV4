@@ -23,7 +23,7 @@ My adaptation:
 I used pin 2 on the ESP32 to connect the DE and RE pins from the MAX485 module.
 
 See the final KiCad diagram under the `waterputv4Schematics` folder. Here is a screenshot in case you don't have KiCad.
-![The final diagram](kicad_4H5Ff61kJo.png)
+![The final diagram](schematicScreenshot.png)
 
 ## Testing the sensor
 
