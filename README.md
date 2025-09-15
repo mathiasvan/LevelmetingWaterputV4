@@ -22,17 +22,31 @@ Thanks lejmr for this diagram. I used it to test my sensor. It is wrong for the 
 My adaptation:
 I used pin 2 on the ESP32 to connect the DE and RE pins from the MAX485 module.
 
+See the final KiCad diagram under the `waterputv4Schematics` folder. Here is a screenshot in case you don't have KiCad.
+![The final diagram](kicad_4H5Ff61kJo.png)
+
 ## Testing the sensor
 
 This took a lot of trial and error but I got it working in the end. Some important remarks:
 
 1. R0 from the MAX485 module should be connected to RX on the ESP32 and DI to TX. This is wrong in the original diagram I used.
 2. The provided screw terminals on the MAX485 module are useful to connect the sensor to.
-3. The test code is in the folder `testcode`.
+3. You cannot use the Serial port for debugging as you need the TX and RX pins to communicate with the sensor. I used the Bluetooth Serial library instead. You need to download the Bluetooth Serial app on your phone to connect to the wireless Serial.
+4. When uploading the code, disconnect TX, RX, 5V and GND from the MAX485 and ESP32.
+5. The test code is in the folder `testcode`.
 
 ## Final integration
 
-I have been using ThingSpeak for all the previous versions and it works quite well to store the data.
+- I have been using ThingSpeak for all the previous versions and it works quite well to store the data.
+- The Bluetooth Serial library took too much space, so I have switched to the TelnetStream library. You need to install PuTTY and enter the IP adress which can be obtained from the Serial monitor. After this, it connects to the modbus sensor and from that moment on, all logging will happen with the telnet stream on PuTTY.
+- You need to add a `credentials.h` file in the same folder as the final code. You need to fill this template with your own credentials.
+
+```c++
+#define mySSID "xxxxx"
+#define myPASSWORD "xxxxx"
+#define myChannelNumber 111111
+#define myWriteAPIKey "xxxxxx"
+```
 
 ## Resources
 
