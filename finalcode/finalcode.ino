@@ -5,7 +5,6 @@
     Check the logs of the sensor with a telnet client (PuTTY). Commands:
     - ping: the esp32 will respond with pong and the current height
     - send data: immediately sends data to ThingSpeak, instead of waiting for the next interval
-    - Unknown commands will be responded to with "Unknown command: <command>"
     Last IP adress = 192.168.1.46 (can change, see Serial communication if last IP adress does not work)
 
     Mathias Van Nuland 2025
@@ -239,9 +238,7 @@ void loop() {
             TelnetStream.print((SEND_DATA_INTERVAL - (millis() - dataPreviousMillis)) / 1000);
             TelnetStream.println(" seconds");
     } else if (buffer == "send data") {
+        TelnetStream.println("Sending data now...");
         sendData();
-    } else if (buffer.length() > 0) {
-        TelnetStream.print("Unknown command: ");
-        TelnetStream.println(buffer);
     }
 }
