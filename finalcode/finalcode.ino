@@ -4,6 +4,8 @@
 
     Check the logs of the sensor with a telnet client (PuTTY). Commands:
     - ping: the esp32 will respond with pong and the current height
+    - send data: immediately sends data to ThingSpeak, instead of waiting for the next interval
+    - Unknown commands will be responded to with "Unknown command: <command>"
     Last IP adress = 192.168.1.46 (can change, see Serial communication if last IP adress does not work)
 
     Mathias Van Nuland 2025
@@ -148,6 +150,35 @@ bool sendHeight(float h) {
     }
 }
 
+// Sends the height to ThingSpeak, handles errors and reconnects to WiFi if needed
+void sendData() {
+    float height = getHeight();  // Get height from sensor
+    TelnetStream.print("Height: ");
+    TelnetStream.print(height, 1);
+    TelnetStream.println("cm");
+
+    if (height > 200.0) {  // Sensor is dry
+        TelnetStream.println("Height > 200.0");
+        TelnetStream.println("Dry sensor, changing height to 0...");
+        height = 0;
+    }
+
+    if (height == -1.0) {  // Sensor error. Check wiring!
+        TelnetStream.println("Height == -1.0");
+        TelnetStream.println("Not attempting upload to ThingSpeak due to error with sensor. Check wiring!");
+    } else {
+        // Try to send distance to thingspeak, else reconnect to WiFi
+        if (sendHeight(height)) {
+            TelnetStream.print("Height: ");
+            TelnetStream.print(height);
+            TelnetStream.println(" uploaded to ThingSpeak server.");
+        } else {  // Reconnect to WiFi
+            TelnetStream.println("Sending data to ThingSpeak servers failed. Reconnecting to WiFi...");
+            reconnectToWiFi();
+        }
+    }
+}
+
 /* -------------------- SETUP -------------------- */
 
 void setup() {
@@ -189,33 +220,8 @@ void loop() {
     currentMillis = millis();
     if (WiFi.status() == WL_CONNECTED && (currentMillis - dataPreviousMillis >= SEND_DATA_INTERVAL)) {
         dataPreviousMillis = currentMillis;
-        float height = getHeight();  // Get height from sensor
-        TelnetStream.print("Height: ");
-        TelnetStream.print(height, 1);
-        TelnetStream.println("cm");
-
-        if (height > 200.0) {  // Sensor is dry
-            TelnetStream.println("Height > 200.0");
-            TelnetStream.println("Dry sensor, changing height to 0...");
-            height = 0;
-        }
-
-        if (height == -1.0) {  // Sensor error. Check wiring!
-            TelnetStream.println("Height == -1.0");
-            TelnetStream.println("Not attempting upload to ThingSpeak due to error with sensor. Check wiring!");
-        } else {
-            // Try to send distance to thingspeak, else reconnect to WiFi
-            if (sendHeight(height)) {
-                TelnetStream.print("Height: ");
-                TelnetStream.print(height);
-                TelnetStream.println(" uploaded to ThingSpeak server.");
-            } else {  // Reconnect to WiFi
-                TelnetStream.println("Sending data to ThingSpeak servers failed. Reconnecting to WiFi...");
-                reconnectToWiFi();
-            }
-        }
+        sendData();
     }
-
 
     // Handle telnet commands
     String buffer = "";
@@ -227,10 +233,15 @@ void loop() {
 
     if (buffer == "ping") {  // If the user types "ping" in the telnet console, the esp32 will respond with "pong"
             TelnetStream.println("pong");
-            TelnetStream.print("Current height: ");
+            TelnetStream.println("Doing a height reading...");
             TelnetStream.println(getHeight());
             TelnetStream.print("Time to next data send: ");
             TelnetStream.print((SEND_DATA_INTERVAL - (millis() - dataPreviousMillis)) / 1000);
             TelnetStream.println(" seconds");
+    } else if (buffer == "send data") {
+        sendData();
+    } else if (buffer.length() > 0) {
+        TelnetStream.print("Unknown command: ");
+        TelnetStream.println(buffer);
     }
 }
