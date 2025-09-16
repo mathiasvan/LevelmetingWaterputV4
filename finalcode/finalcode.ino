@@ -2,8 +2,12 @@
 
     Reads the value of a QDY30A level sensor and sends the data to ThingSpeak.
 
+    Check the logs of the sensor with a telnet client (PuTTY). Commands:
+    - ping: the esp32 will respond with pong and the current height
+    Last IP adress = 192.168.1.46 (can change, see Serial communication if last IP adress does not work)
+
     Mathias Van Nuland 2025
-    Last updated on 15/09/2025
+    Last updated on 16/09/2025
 
 */
 
@@ -210,5 +214,23 @@ void loop() {
                 reconnectToWiFi();
             }
         }
+    }
+
+
+    // Handle telnet commands
+    String buffer = "";
+    while (TelnetStream.available()) {
+        buffer += (char)TelnetStream.read();
+    }
+
+    buffer.trim();  // Remove any leading/trailing whitespace
+
+    if (buffer == "ping") {  // If the user types "ping" in the telnet console, the esp32 will respond with "pong"
+            TelnetStream.println("pong");
+            TelnetStream.print("Current height: ");
+            TelnetStream.println(getHeight());
+            TelnetStream.print("Time to next data send: ");
+            TelnetStream.print((SEND_DATA_INTERVAL - (millis() - dataPreviousMillis)) / 1000);
+            TelnetStream.println(" seconds");
     }
 }
