@@ -48,6 +48,43 @@ This took a lot of trial and error but I got it working in the end. Some importa
 #define myWriteAPIKey "xxxxxx"
 ```
 
+## Telnet Commands
+
+After connecting to your ESP32 using PuTTY (see IP address in Serial Monitor), you can use the following commands in the telnet console:
+
+- **ping**  
+  The ESP32 will respond with `pong`, show the current sensor height, and display the time remaining until the next automatic data upload to ThingSpeak.
+
+- **send data**  
+  Immediately triggers a sensor reading and uploads the value to ThingSpeak, regardless of the regular upload interval.
+
+**Example session:**
+
+```
+> ping
+pong
+Doing a height reading...
+Data at adress 4: 158
+Converted height: 15.8cm
+15.80
+Time to next data send: 122 seconds
+
+> send data
+Sending data now...
+Data at adress 4: 158
+Converted height: 15.8cm
+Height: 15.8cm
+Uploading data to ThingSpeak...
+Successful upload to ThingSpeak.
+Height: 15.80 uploaded to ThingSpeak server.
+
+```
+
+If you enter an unknown command, nothing will happen. Commands are case-sensitive.
+
+**Tip:**  
+Make sure you have connected to the correct IP address and that your ESP32 is powered and connected to WiFi.
+
 ## Resources
 
 - [Datasheets that came in the box](https://h5.hlcode.com.cn/?id=NK1LFtJ&f=wx)

@@ -231,14 +231,15 @@ void loop() {
     buffer.trim();  // Remove any leading/trailing whitespace
 
     if (buffer == "ping") {  // If the user types "ping" in the telnet console, the esp32 will respond with "pong"
-            TelnetStream.println("pong");
-            TelnetStream.println("Doing a height reading...");
-            TelnetStream.println(getHeight());
-            TelnetStream.print("Time to next data send: ");
-            TelnetStream.print((SEND_DATA_INTERVAL - (millis() - dataPreviousMillis)) / 1000);
-            TelnetStream.println(" seconds");
+        TelnetStream.println("pong");
+        TelnetStream.println("Doing a height reading...");
+        TelnetStream.println(getHeight());
+        TelnetStream.print("Time to next data send: ");
+        TelnetStream.print((SEND_DATA_INTERVAL - (millis() - dataPreviousMillis)) / 1000);
+        TelnetStream.println(" seconds");
     } else if (buffer == "send data") {
         TelnetStream.println("Sending data now...");
+        dataPreviousMillis = currentMillis;
         sendData();
     }
 }
