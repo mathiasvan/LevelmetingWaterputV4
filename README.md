@@ -85,6 +85,10 @@ If you enter an unknown command, nothing will happen. Commands are case-sensitiv
 **Tip:**  
 Make sure you have connected to the correct IP address and that your ESP32 is powered and connected to WiFi.
 
+## Wishlist
+
+[] Add `reconnect wifi` command.
+
 ## Resources
 
 - [Datasheets that came in the box](https://h5.hlcode.com.cn/?id=NK1LFtJ&f=wx)
