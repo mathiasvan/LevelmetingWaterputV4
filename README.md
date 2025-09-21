@@ -87,7 +87,8 @@ Make sure you have connected to the correct IP address and that your ESP32 is po
 
 ## Wishlist
 
-[] Add `reconnect wifi` command.
+- [ ] Add `reconnect wifi` command.
+- [ ] OTA updates
 
 ## Resources
 
