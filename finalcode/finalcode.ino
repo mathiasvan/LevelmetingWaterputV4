@@ -5,10 +5,10 @@
     Check the logs of the sensor with a telnet client (PuTTY). Commands:
     - ping: the esp32 will respond with pong and the current height
     - send data: immediately sends data to ThingSpeak, instead of waiting for the next interval
-    Last IP adress = 192.168.1.46 (can change, see Serial communication if last IP adress does not work)
+    Last IP adress = 192.168.1.57 (can change, see Serial communication if last IP adress does not work)
 
     Mathias Van Nuland 2025
-    Last updated on 16/09/2025
+    Last updated on 21/09/2025
 
 */
 
@@ -17,7 +17,7 @@
 #include <WiFi.h>          // Wifi library
 #include <ThingSpeak.h>    // Communicating with ThingSpeak
 #include <ModbusMaster.h>  // Communicate with the Modbus RS485 protocol https://github.com/4-20ma/ModbusMaster/tree/master
-#include <TelnetStream.h>  // Use PuTTY to view the logs, last IP adress = 192.168.1.46
+#include <TelnetStream.h>  // Use PuTTY to view the logs, last IP adress = 192.168.1.57
 
 /* -------------------- SENSOR -------------------- */
 
